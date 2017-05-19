@@ -227,6 +227,9 @@ overflow: hidden;
     }
 }
 
+#erreurRegister{
+    color: red;
+}
 .text-green {
     color: #16a085;
 }

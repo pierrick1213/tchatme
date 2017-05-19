@@ -26,6 +26,13 @@ session_destroy();
 
         <form class="form-signin" action="login.traitement.php" method="post">
         <h2 class="form-signin-heading">Connexion</h2>
+        <?php
+        if (isset($_GET["reussi"])) {
+            if ($_GET["reussi"] == true) {
+                echo '<p>Votre compte a bien été créé</p>';
+            }
+        }
+        ?>
         <label for="inputPseudo" class="sr-only">Pseudo</label>
         <input name="pseudo" type="text" id="inputPseudo" class="form-control" placeholder="Pseudo" required autofocus>
         <label for="inputPassword" class="sr-only">Mot de passe</label>
