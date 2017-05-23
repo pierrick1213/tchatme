@@ -2,8 +2,10 @@
 session_start();
 require_once 'dao.php';
 
-function navBar(){
-    return '<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+function navBar() {
+    foreach (readUserById($_SESSION['idUtilisateurConnecte']) as $user) {
+
+        return '<div class="navbar navbar-default navbar-fixed-top" role="navigation">
             <div class="container"> 
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -22,7 +24,7 @@ function navBar(){
                     <ul class="nav navbar-nav navbar-right">
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <strong>Salman</strong>
+                                <strong>'.$user["prenomUtilisateur"].'</strong>
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
@@ -31,14 +33,14 @@ function navBar(){
                                             <div class="col-lg-4">
                                                 <p class="text-center">
                                                     <!--<span class="glyphicon glyphicon-user icon-size"></span>-->
-                                                    <img src="http://lorempixel.com/100/100/people/1/" alt="">
+                                                    <img width="100" height="100" src="img/avatar/'.$user["avatarUtilisateur"].'" alt="">
                                                 </p>
                                             </div>
                                             <div class="col-lg-8">
-                                                <p class="text-left"><strong>Salman Khan</strong></p>
-                                                <p class="text-left small">crazytodevelop@@gmail.com</p>
+                                                <p class="text-left"><strong>'.$user["prenomUtilisateur"].' '.$user["nomUtilisateur"].'</strong></p>
+                                                <p class="text-left small">'.$user["emailUtilisateur"].'</p>
                                                 <p class="text-left">
-                                                    <a href="#" class="btn btn-primary btn-block btn-sm">Profile</a>
+                                                    <a href="profil.php" class="btn btn-primary btn-block btn-sm">Profil</a>
                                                 </p>
                                             </div>
                                         </div>
@@ -50,7 +52,7 @@ function navBar(){
                                         <div class="row">
                                             <div class="col-lg-12">
                                                 <p>
-                                                    <a href="login.php" class="btn btn-danger btn-block">Logout</a>
+                                                    <a href="login.php" class="btn btn-danger btn-block">Déconnexion</a>
                                                 </p>
                                             </div>
                                         </div>
@@ -62,15 +64,16 @@ function navBar(){
                 </div>
             </div>
         </div><br><br>';
+    }
 }
 
-function verifConnecte(){
+function verifConnecte() {
     if (!isset($_SESSION['idUtilisateurConnecte'])) {
         header("location: login.php");
     }
 }
 
-function tchatRoom(){
+function tchatRoom() {
     return '<div class="container bootstrap snippet">
             <div class="row">
                 <div class="col-md-4 col-md-offset-4">
@@ -156,20 +159,21 @@ function tchatRoom(){
             </div>
         </div>';
 }
-function participeTchat(){
+
+function participeTchat() {
     $return = "";
-                    foreach (readTchat_roomByUserId($_SESSION['idUtilisateurConnecte']) as $tchatRoom) {
-                        $return .= '<tr>
-                         <td><img src="'.$tchatRoom['vignetteTchat_room'].'"></td>
-                         <td><a href="roomTchat.php?idTchat_room='.$tchatRoom['idTchat_room'].'">'.$tchatRoom['nomTchat_room'].'</a></td>
-                         <td>'.$tchatRoom['descritpionTchat_room'].'</td>
-                         <td>'.$tchatRoom['dureeVieTchat_room'].'</td>
+    foreach (readTchat_roomByUserId($_SESSION['idUtilisateurConnecte']) as $tchatRoom) {
+        $return .= '<tr>
+                         <td><img width="50" height="50" src="img/vignette/'.$tchatRoom['vignetteTchat_room'].'"></td>
+                         <td><a href="roomTchat.php?idTchat_room=' . $tchatRoom['idTchat_room'] . '">' . $tchatRoom['nomTchat_room'] . '</a></td>
+                         <td>' . $tchatRoom['descritpionTchat_room'] . '</td>
+                         <td>' . $tchatRoom['dureeVieTchat_room'] . '</td>
                         </tr>';
-                    }
-                    return $return;
+    }
+    return $return;
 }
 
-function footer(){
+function footer() {
     return '<footer class="footer">
       <div class="container" style="text-align:center;">
         <p style="display:inline-block;float:left;" class="text-muted">Pierrick Antenen ©</p>
@@ -178,4 +182,3 @@ function footer(){
       </div>
     </footer>';
 }
-

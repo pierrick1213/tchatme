@@ -23,6 +23,13 @@ function readUser(){
     $sql->execute();
     return $sql;
 }
+function readUserById($idUtilisateur){
+    $req = "SELECT `nomUtilisateur`, `prenomUtilisateur`, `pseudoUtilisateur`, `emailUtilisateur`, `avatarUtilisateur` FROM `utilisateurs` WHERE `idUtilisateur` = :idUtilisateur";
+    $sql = MyPdo()->prepare($req);
+    $sql->bindParam(':idUtilisateur', $idUtilisateur);
+    $sql->execute();
+    return $sql;
+}
 function CreateUser($prenom, $nom, $pseudo, $email, $mdp, $avatar) {
     $req = "INSERT INTO `utilisateurs`(`nomUtilisateur`, `prenomUtilisateur`, `pseudoUtilisateur`, `emailUtilisateur`, `mdpUtilisateur`, `avatarUtilisateur`) VALUES (:nom,:prenom,:pseudo,:email,:mdp,:avatar)";
     $sql = MyPdo()->prepare($req);
