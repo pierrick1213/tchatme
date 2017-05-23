@@ -17,9 +17,9 @@ function navBar() {
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="index.php">Salles de tchat</a></li>
-                        <li><a href="#">Autres salles</a></li>
-                        <li><a href="#">Les membres</a></li>              
+                        <li class="active"><a href="index.php">Mes salles de tchat</a></li>
+                        <li><a href="#">Autres salles disponibles</a></li>
+                        <li><a href="users.php">Les membres</a></li>              
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li class="dropdown">

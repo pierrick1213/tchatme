@@ -248,3 +248,8 @@ position: fixed;
 bottom: 0px;
 width: 100%;
 }
+.tableauxUsers{
+    width: 48%;
+  display:inline-block;
+  vertical-align:top;
+}

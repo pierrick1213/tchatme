@@ -1,5 +1,5 @@
 <?php
-require_once 'fonction.php';
+require_once 'function.php';
 verifConnecte();
 ?>
 <!DOCTYPE html>
@@ -27,7 +27,7 @@ verifConnecte();
            echo navBar();
            ?>
         <div class="container">
-        <h2>Vos salles de tchat :</h2><br>
+            <h2 style="display: inline">Vos salles de tchat :</h2> <a href="newRoomTchat.php" style="float: right" type="button" class="btn btn-primary btn-lg">+</a>
             <table class="table table-bordered">
                 <tr>
                     <th>logo</th>

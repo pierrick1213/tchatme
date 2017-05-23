@@ -1,5 +1,5 @@
 <?php
-require_once 'fonction.php';
+require_once 'function.php';
 verifConnecte();
 ?>
 <!DOCTYPE html>
