@@ -32,7 +32,6 @@ function navBar() {
                                         <div class="row">
                                             <div class="col-lg-4">
                                                 <p class="text-center">
-                                                    <!--<span class="glyphicon glyphicon-user icon-size"></span>-->
                                                     <img width="100" height="100" src="img/avatar/'.$user["avatarUtilisateur"].'" alt="">
                                                 </p>
                                             </div>
@@ -171,6 +170,45 @@ function participeTchat() {
                         </tr>';
     }
     return $return;
+}
+
+function membresAffichage(){
+    return '<div class="container">
+            <div class="tableauxUsers">
+                <h1>Membres non ami(e)s</h1>
+                <input style="display: inline-block;width: 75%" type="text" class="form-control" id="rechercheNonAmis" placeholder="Rechercher le pseudo">
+                <input style="display: inline-block;width: 25%" type="button" value="Rechercher" class="btn btn-primary pull-right" onclick="searchNoFriend()">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Avatar</th>
+                            <th>Pseudo</th>
+                            <th>Inviter</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultNonAmis" style="text-align: center;">
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="tableauxUsers" style="float: right;">
+                <h1 style="float: right">Mes ami(e)s</h1>
+                <input style="display: inline-block;width: 75%" type="text" class="form-control" id="rechercheAmis" placeholder="Rechercher le pseudo">
+                <input style="display: inline-block;width: 25%" type="button" value="Rechercher" class="btn btn-primary pull-right" onclick="searchFriend()">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Avatar</th>
+                            <th>Pseudo</th>
+                            <th>Supprimer</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultAmis" style="text-align: center">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>';
 }
 
 function footer() {

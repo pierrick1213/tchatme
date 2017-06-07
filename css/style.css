@@ -249,7 +249,6 @@ bottom: 0px;
 width: 100%;
 }
 .tableauxUsers{
-    width: 48%;
+  width: 40%;
   display:inline-block;
-  vertical-align:top;
 }

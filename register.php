@@ -31,7 +31,7 @@
         <?php
         if (isset($_GET['erreur'])) {
             if ($_GET['erreur'] == "pseudoExist") {
-            echo '<p id="erreurRegister">le pseudo indiqué est déja inscrit dans la base</p>';
+            echo '<p id="erreurRegister">Le pseudo indiqué est déja inscrit dans la base</p>';
         }
         }
         ?>
@@ -40,7 +40,7 @@
         <?php
         if (isset($_GET['erreur'])) {
             if ($_GET['erreur'] == "emailExist") {
-            echo '<p id="erreurRegister">l\'émail indiqué est déja inscrit dans la base</p>';
+            echo '<p id="erreurRegister">L\'émail indiqué est déja inscrit dans la base</p>';
         }
         }
         ?>
@@ -49,7 +49,7 @@
         <?php
         if (isset($_GET['erreur'])) {
             if ($_GET['erreur'] == "notSameMdp") {
-            echo '<p id="erreurRegister">les mots de passe ne correspondent pas</p>';
+            echo '<p id="erreurRegister">Les mots de passe ne correspondent pas</p>';
         }
         }
         ?>
@@ -60,7 +60,7 @@
         <?php
         if (isset($_GET['erreur'])) {
             if ($_GET['erreur'] == "failAvatar") {
-            echo '<p id="erreurRegister">Il y  a eu une erreur avec votre avatar. Veuillez changer d\'image</p>';
+            echo '<p id="erreurRegister">Il y a eu une erreur avec votre avatar. Veuillez changer d\'image</p>';
         }
         }
         ?>

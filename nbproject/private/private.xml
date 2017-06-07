@@ -3,9 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/C:/Users/antenenp_info/Documents/tchatme/configDB.php</file>
+            <file>file:/C:/Users/antenenp_info/Documents/tchatme/css/style.css</file>
             <file>file:/C:/Users/antenenp_info/Documents/tchatme/dao.php</file>
-            <file>file:/C:/Users/antenenp_info/Documents/tchatme/login.traitement.php</file>
-            <file>file:/C:/Users/antenenp_info/Documents/tchatme/login.php</file>
+            <file>file:/C:/Users/antenenp_info/Documents/tchatme/sendInvitAjax.php</file>
+            <file>file:/C:/Users/antenenp_info/Documents/tchatme/searchAjaxFriend.php</file>
+            <file>file:/C:/Users/antenenp_info/Documents/tchatme/function.php</file>
+            <file>file:/C:/Users/antenenp_info/Documents/tchatme/searchAjaxNoFriend.php</file>
+            <file>file:/C:/Users/antenenp_info/Documents/tchatme/users.php</file>
         </group>
     </open-files>
 </project-private>

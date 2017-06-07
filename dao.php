@@ -23,6 +23,18 @@ function readUser(){
     $sql->execute();
     return $sql;
 }
+function readUserNoFriend($pseudo, $idUser){
+    $req = "SELECT * FROM utilisateurs WHERE idUtilisateur NOT IN (SELECT idUtilisateur FROM utilisateurs, sontamis where `idUtilisateur` = idUtilisateur_estAmi AND idUtilisateur_de = $idUser OR `idUtilisateur` = idUtilisateur_de AND idUtilisateur_estAmi = $idUser GROUP BY idUtilisateur HAVING COUNT(idUtilisateur)>= 1) AND idUtilisateur != $idUser AND pseudoUtilisateur like '%".$pseudo."%'";
+        $sql = MyPdo()->prepare($req);
+        $sql->execute();
+        return $sql;
+}
+function readUserFriend($pseudo, $idUser){
+    $req = "SELECT * FROM utilisateurs, sontamis where pseudoUtilisateur like '%" . $pseudo . "%' AND `idUtilisateur` = idUtilisateur_estAmi AND idUtilisateur_de = $idUser OR `idUtilisateur` = idUtilisateur_de AND idUtilisateur_estAmi = $idUser GROUP BY idUtilisateur HAVING COUNT(idUtilisateur)>1";
+        $sql = MyPdo()->prepare($req);
+        $sql->execute();
+        return $sql;
+}
 function readUserById($idUtilisateur){
     $req = "SELECT `nomUtilisateur`, `prenomUtilisateur`, `pseudoUtilisateur`, `emailUtilisateur`, `avatarUtilisateur` FROM `utilisateurs` WHERE `idUtilisateur` = :idUtilisateur";
     $sql = MyPdo()->prepare($req);
@@ -47,4 +59,12 @@ function readTchat_roomByUserId($idUtilisateur){
     $sql->bindParam(':idUtilisateur', $idUtilisateur);
     $sql->execute();
     return $sql;
+}
+function CreateInvitFriend($idOfMe, $idUser, $reason){
+    $req = "INSERT INTO `sontamis`(`idUtilisateur_estAmi`, `idUtilisateur_de`, `raison`) VALUES (:idOfMe,:idUser,:reason)";
+    $sql = MyPdo()->prepare($req);
+    $sql->bindParam(':idOfMe', $idOfMe);
+    $sql->bindParam(':idUser', $idUser);
+    $sql->bindParam(':reason', $reason);
+    $sql->execute();
 }

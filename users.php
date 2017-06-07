@@ -25,68 +25,64 @@ verifConnecte();
     <body>
         <?php
         echo navBar();
-        ?>
-        <div class="container">
-            <div class="tableauxUsers">
-                <table class="table table-bordered">
-    <thead>
-      <tr>
-        <th>Firstname</th>
-        <th>Lastname</th>
-        <th>Email</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>John</td>
-        <td>Doe</td>
-        <td>john@example.com</td>
-      </tr>
-      <tr>
-        <td>Mary</td>
-        <td>Moe</td>
-        <td>mary@example.com</td>
-      </tr>
-      <tr>
-        <td>July</td>
-        <td>Dooley</td>
-        <td>july@example.com</td>
-      </tr>
-    </tbody>
-  </table>
-            </div>
-            <div class="tableauxUsers">
-                <table class="table table-bordered">
-    <thead>
-      <tr>
-        <th>Firstname</th>
-        <th>Lastname</th>
-        <th>Email</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>John</td>
-        <td>Doe</td>
-        <td>john@example.com</td>
-      </tr>
-      <tr>
-        <td>Mary</td>
-        <td>Moe</td>
-        <td>mary@example.com</td>
-      </tr>
-      <tr>
-        <td>July</td>
-        <td>Dooley</td>
-        <td>july@example.com</td>
-      </tr>
-    </tbody>
-  </table>
-            </div>
-        </div>
-        <?php
+        echo membresAffichage();
         echo footer();
         ?>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                searchNoFriend();
+                searchFriend();
+            });
+            function searchNoFriend() {
+                var nameNoFriend = $('#rechercheNonAmis').val();
+                $.ajax({
+                    type: 'POST',
+                    url: 'searchAjaxNoFriend.php',
+                    data: {'nameNoFriend': nameNoFriend},
+                    dataType: 'html',
+                    success: function (data) {
+                        $('#resultNonAmis').html(data);
+                    },
+                    error: function (jqXHR) {
+                        $('#resultNonAmis').html(jqXHR.toString());
+                    }
+                });
+            }
 
+            function searchFriend() {
+                var nameFriend = $('#rechercheAmis').val();
+                $.ajax({
+                    type: 'POST',
+                    url: 'searchAjaxFriend.php',
+                    data: {'nameFriend': nameFriend},
+                    dataType: 'html',
+                    success: function (data) {
+                        $('#resultAmis').html(data);
+                    },
+                    error: function (jqXHR) {
+                        $('#resultAmis').html(jqXHR.toString());
+                    }
+                });
+            }
+
+            function sendInvitText(idUtilisateur) {
+
+                var texteDemande = prompt("Veuillez indiquer la raison de votre demande d'amitié (laissez vide si aucune raison)");
+                if (texteDemande !== null) {
+                    $.ajax({
+                    type: 'POST',
+                    url: 'sendInvitAjax.php',
+                    data: {'idUtilisateur': idUtilisateur, 'texteDemande': texteDemande},
+                    dataType: 'html',
+                    success: function () {
+                        searchNoFriend();
+                    },
+                    error: function (jqXHR) {
+                        
+                    }
+                });
+                }
+            }
+        </script>
     </body>
 </html>
