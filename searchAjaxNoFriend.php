@@ -8,7 +8,7 @@ foreach(readUserNoFriend($pseudo, $_SESSION['idUtilisateurConnecte'])->fetchAll(
 {
     $toDisplay .= "<tr>";
     $toDisplay .= "<td><img width='50' height='50' src='img/avatar/".$user["avatarUtilisateur"]."'></td>";
-    $toDisplay .= "<td>".$user['pseudoUtilisateur']."</td>";
+    $toDisplay .= '<td><a href="profil.php?idUtilisateur=' . $user['idUtilisateur'] . '">'.$user['pseudoUtilisateur'].'</a></td>';
     $toDisplay .= '<td><a href="javascript:sendInvitText('.$user['idUtilisateur'].')" class="btn btn-primary">Ajouter</a></td>';
     $toDisplay .= "</tr>"; 
 }

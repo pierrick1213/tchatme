@@ -1,11 +1,13 @@
 <?php
+
 session_start();
 require_once 'dao.php';
 
 function navBar() {
+    $return = "";
     foreach (readUserById($_SESSION['idUtilisateurConnecte']) as $user) {
 
-        return '<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+        $return .= '<div class="navbar navbar-default navbar-fixed-top" role="navigation">
             <div class="container"> 
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -24,7 +26,7 @@ function navBar() {
                     <ul class="nav navbar-nav navbar-right">
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <strong>'.$user["prenomUtilisateur"].'</strong>
+                                <strong>' . $user["prenomUtilisateur"] . '</strong>
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
@@ -32,12 +34,12 @@ function navBar() {
                                         <div class="row">
                                             <div class="col-lg-4">
                                                 <p class="text-center">
-                                                    <img width="100" height="100" src="img/avatar/'.$user["avatarUtilisateur"].'" alt="">
+                                                    <img width="100" height="100" src="img/avatar/' . $user["avatarUtilisateur"] . '" alt="">
                                                 </p>
                                             </div>
                                             <div class="col-lg-8">
-                                                <p class="text-left"><strong>'.$user["prenomUtilisateur"].' '.$user["nomUtilisateur"].'</strong></p>
-                                                <p class="text-left small">'.$user["emailUtilisateur"].'</p>
+                                                <p class="text-left"><strong>' . $user["prenomUtilisateur"] . ' ' . $user["nomUtilisateur"] . '</strong></p>
+                                                <p class="text-left small">' . $user["emailUtilisateur"] . '</p>
                                                 <p class="text-left">
                                                     <a href="profil.php" class="btn btn-primary btn-block btn-sm">Profil</a>
                                                 </p>
@@ -57,6 +59,22 @@ function navBar() {
                                         </div>
                                     </div>
                                 </li>
+                                <li class="divider navbar-login-session-bg"></li>
+                                <li><p  style="text-decoration: underline;" class="text-left"><strong>Demandes d\'amis</strong></p>
+                                <p class="text-left small">
+                                <table class="table table-bordered" style="border: 0;border-collapse: collapse;">
+                    <tbody >';
+        foreach (readInvit($_SESSION['idUtilisateurConnecte']) as $invit) {
+            $return .='<tr>
+                                <td style="padding: 0;border: 1px solid white;"><img width="50" height="50" src="img/avatar/' . $invit["avatarUtilisateur"] . '"></td>
+                                <td title="' . $invit['raison'] . '" style="padding: 0;border: 1px solid white;"><a href="profil.php?idUtilisateur=' . $invit['idUtilisateur'] . '">' . $invit['pseudoUtilisateur'] . '</a></td>
+                                <td style="padding: 0;border: 1px solid white;"><a href="acceptInvit.php?idUtilisateur=' . $invit['idUtilisateur'] . '"><img width="10" height="10" src="img/icon/checked.svg"></img></a></td>
+                                <td style="padding: 0;border: 1px solid white;"><a href="refuseInvit.php?idUtilisateur=' . $invit['idUtilisateur'] . '"><img width="10" height="10" src="img/icon/cancel.svg"></img></a></td>
+                        </tr>';
+        }
+        $return .=' </tbody>
+                    </table>
+                    </p></li>
                             </ul>
                         </li>
                     </ul>
@@ -64,12 +82,52 @@ function navBar() {
             </div>
         </div><br><br>';
     }
+    return $return;
 }
 
 function verifConnecte() {
     if (!isset($_SESSION['idUtilisateurConnecte'])) {
         header("location: login.php");
     }
+}
+
+function verifIdUser() {
+    if (isset($_GET['idUtilisateur'])) {
+        if ($_GET['idUtilisateur'] == $_SESSION['idUtilisateurConnecte']) {
+            header("location: profil.php");
+        }
+    }
+}
+
+function profil() {
+    if (isset($_GET['idUtilisateur'])) {
+        $idUtilisateur = $_GET['idUtilisateur'];
+    } else {
+        $idUtilisateur = $_SESSION['idUtilisateurConnecte'];
+    }
+    $return = "";
+    foreach (readUserById($idUtilisateur) as $user) {
+        $return.='<div class="container" style="text-align: center;">
+            <img width="250" height="250" src="img/avatar/' . $user["avatarUtilisateur"] . '">
+            <h2><strong>Nom : </strong>' . $user['nomUtilisateur'] . '</h2>
+            <h2><strong>Prénom : </strong>' . $user['prenomUtilisateur'] . '</h2>
+            <h2><strong>Pseudo : </strong>' . $user['pseudoUtilisateur'] . '</h2>
+            <h2><strong>Email : </strong>' . $user['emailUtilisateur'] . '</h2>';
+
+        if (isset($_GET['idUtilisateur'])) {
+            if (readIfUserIsFriendOrNot($_SESSION['idUtilisateurConnecte'], $idUtilisateur) === 0) {
+                $return .='<a href="javascript:deleteFriend(' . $_GET['idUtilisateur'] . ', true)" class="btn btn-danger">Supprimer de mes amis</a>';
+            } else if (readIfUserIsFriendOrNot($_SESSION['idUtilisateurConnecte'], $idUtilisateur) === 2) {
+                $return .='<a href="javascript:sendInvitText(' . $_GET['idUtilisateur'] . ', true)" class="btn btn-primary">Ajouter en tant qu\'ami</a>';
+            } else if (readIfUserIsFriendOrNot($_SESSION['idUtilisateurConnecte'], $idUtilisateur) === 1) {
+                $return .= 'En attente de l\'acceptation de la demande';
+            }
+        } else {
+            $return .= '<a href="" class="btn btn-success">Modifier Profil</a>';
+        }
+        $return .='</div>';
+    }
+    return $return;
 }
 
 function tchatRoom() {
@@ -163,7 +221,7 @@ function participeTchat() {
     $return = "";
     foreach (readTchat_roomByUserId($_SESSION['idUtilisateurConnecte']) as $tchatRoom) {
         $return .= '<tr>
-                         <td><img width="50" height="50" src="img/vignette/'.$tchatRoom['vignetteTchat_room'].'"></td>
+                         <td><img width="50" height="50" src="img/vignette/' . $tchatRoom['vignetteTchat_room'] . '"></td>
                          <td><a href="roomTchat.php?idTchat_room=' . $tchatRoom['idTchat_room'] . '">' . $tchatRoom['nomTchat_room'] . '</a></td>
                          <td>' . $tchatRoom['descritpionTchat_room'] . '</td>
                          <td>' . $tchatRoom['dureeVieTchat_room'] . '</td>
@@ -172,7 +230,7 @@ function participeTchat() {
     return $return;
 }
 
-function membresAffichage(){
+function membresAffichage() {
     return '<div class="container">
             <div class="tableauxUsers">
                 <h1>Membres non ami(e)s</h1>

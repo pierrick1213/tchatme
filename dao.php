@@ -23,17 +23,34 @@ function readUser(){
     $sql->execute();
     return $sql;
 }
-function readUserNoFriend($pseudo, $idUser){
-    $req = "SELECT * FROM utilisateurs WHERE idUtilisateur NOT IN (SELECT idUtilisateur FROM utilisateurs, sontamis where `idUtilisateur` = idUtilisateur_estAmi AND idUtilisateur_de = $idUser OR `idUtilisateur` = idUtilisateur_de AND idUtilisateur_estAmi = $idUser GROUP BY idUtilisateur HAVING COUNT(idUtilisateur)>= 1) AND idUtilisateur != $idUser AND pseudoUtilisateur like '%".$pseudo."%'";
+function readUserNoFriend($pseudo, $idOfMe){
+    $req = "SELECT * FROM utilisateurs WHERE idUtilisateur NOT IN (SELECT idUtilisateur FROM utilisateurs, sontamis where `idUtilisateur` = idUtilisateur_estAmi AND idUtilisateur_de = $idOfMe OR `idUtilisateur` = idUtilisateur_de AND idUtilisateur_estAmi = $idOfMe GROUP BY idUtilisateur HAVING COUNT(idUtilisateur)>= 1) AND idUtilisateur != $idOfMe AND pseudoUtilisateur like '%".$pseudo."%'";
         $sql = MyPdo()->prepare($req);
         $sql->execute();
         return $sql;
 }
-function readUserFriend($pseudo, $idUser){
-    $req = "SELECT * FROM utilisateurs, sontamis where pseudoUtilisateur like '%" . $pseudo . "%' AND `idUtilisateur` = idUtilisateur_estAmi AND idUtilisateur_de = $idUser OR `idUtilisateur` = idUtilisateur_de AND idUtilisateur_estAmi = $idUser GROUP BY idUtilisateur HAVING COUNT(idUtilisateur)>1";
+function readUserFriend($pseudo, $idOfMe){
+    $req = "SELECT * FROM utilisateurs, sontamis where pseudoUtilisateur like '%" . $pseudo . "%' AND `idUtilisateur` = idUtilisateur_estAmi AND idUtilisateur_de = $idOfMe OR `idUtilisateur` = idUtilisateur_de AND idUtilisateur_estAmi = $idOfMe GROUP BY idUtilisateur HAVING COUNT(idUtilisateur)>1";
         $sql = MyPdo()->prepare($req);
         $sql->execute();
         return $sql;
+}
+function readIfUserIsFriendOrNot($idOfMe, $idUser){
+    $req = "SELECT DISTINCT * FROM utilisateurs, sontamis where `idUtilisateur` = idUtilisateur_estAmi AND idUtilisateur_de = $idOfMe AND `idUtilisateur_estAmi` = $idUser OR `idUtilisateur` = idUtilisateur_de AND idUtilisateur_estAmi = $idOfMe AND `idUtilisateur_de` = $idUser";
+    $sql = MyPdo()->prepare($req);
+    $sql->execute();
+    if ($sql->rowCount() == 2) {
+        return 0;
+    }
+    else if($sql->rowCount() == 1)
+    {
+        return 1;
+    }
+    else if($sql->rowCount() == 0)
+    {
+        return 2;
+    }
+       
 }
 function readUserById($idUtilisateur){
     $req = "SELECT `nomUtilisateur`, `prenomUtilisateur`, `pseudoUtilisateur`, `emailUtilisateur`, `avatarUtilisateur` FROM `utilisateurs` WHERE `idUtilisateur` = :idUtilisateur";
@@ -67,4 +84,38 @@ function CreateInvitFriend($idOfMe, $idUser, $reason){
     $sql->bindParam(':idUser', $idUser);
     $sql->bindParam(':reason', $reason);
     $sql->execute();
+}
+function readInvit($idOfMe){
+    $req = "SELECT * FROM `sontamis`, utilisateurs WHERE `idUtilisateur_de` = :idOfMe1 AND idUtilisateur_estAmi not in (select idUtilisateur_de from sontamis WHERE `idUtilisateur_estAmi` = :idOfMe2) AND idUtilisateur_estAmi = idUtilisateur";
+    $sql = MyPdo()->prepare($req);
+    $sql->bindParam(':idOfMe1', $idOfMe);
+    $sql->bindParam(':idOfMe2', $idOfMe);
+    $sql->execute();
+    return $sql;
+}
+function AcceptInvit($idOfMe, $idUser){
+    $req = "INSERT INTO `sontamis`(`idUtilisateur_estAmi`, `idUtilisateur_de`) VALUES (:idOfMe,:idUser)";
+    $sql = MyPdo()->prepare($req);
+    $sql->bindParam(':idOfMe', $idOfMe);
+    $sql->bindParam(':idUser', $idUser);
+    $sql->execute();
+    return $sql;
+}
+function RefuseInvit($idOfMe, $idUser){
+    $req = "DELETE FROM `sontamis` WHERE `idUtilisateur_de` = :idOfMe  and `idUtilisateur_estAmi` = :idUser";
+    $sql = MyPdo()->prepare($req);
+    $sql->bindParam(':idOfMe', $idOfMe);
+    $sql->bindParam(':idUser', $idUser);
+    $sql->execute();
+    return $sql;
+}
+function DeleteFriend($idOfMe, $idUser){
+    $req = "DELETE FROM `sontamis` WHERE `idUtilisateur_estAmi` = :idOfMe1 AND `idUtilisateur_de` = :idUser1 OR `idUtilisateur_estAmi` = :idUser2 AND `idUtilisateur_de` = :idOfMe2";
+    $sql = MyPdo()->prepare($req);
+    $sql->bindParam(':idOfMe1', $idOfMe);
+    $sql->bindParam(':idOfMe2', $idOfMe);
+    $sql->bindParam(':idUser1', $idUser);
+    $sql->bindParam(':idUser2', $idUser);
+    $sql->execute();
+    return $sql;
 }
