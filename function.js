@@ -73,4 +73,32 @@ function deleteFriend(idUtilisateur, profil) {
     });
 }
 
+function acceptInvit(idUtilisateur){
+    $.ajax({
+        type: 'POST',
+        url: 'acceptInvitAjax.php',
+        data: {'idUtilisateur': idUtilisateur},
+        success: function () {
+            window.location.reload();
+        },
+        error: function (jqXHR) {
+
+        }
+    });
+}
+
+function refuseInvit(idUtilisateur){
+    $.ajax({
+        type: 'POST',
+        url: 'refuseInvitAjax.php',
+        data: {'idUtilisateur': idUtilisateur},
+        success: function () {
+            window.location.reload();
+        },
+        error: function (jqXHR) {
+
+        }
+    });
+}
+
 

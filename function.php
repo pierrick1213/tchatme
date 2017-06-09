@@ -68,8 +68,8 @@ function navBar() {
             $return .='<tr>
                                 <td style="padding: 0;border: 1px solid white;"><img width="50" height="50" src="img/avatar/' . $invit["avatarUtilisateur"] . '"></td>
                                 <td title="' . $invit['raison'] . '" style="padding: 0;border: 1px solid white;"><a href="profil.php?idUtilisateur=' . $invit['idUtilisateur'] . '">' . $invit['pseudoUtilisateur'] . '</a></td>
-                                <td style="padding: 0;border: 1px solid white;"><a href="acceptInvit.php?idUtilisateur=' . $invit['idUtilisateur'] . '"><img width="10" height="10" src="img/icon/checked.svg"></img></a></td>
-                                <td style="padding: 0;border: 1px solid white;"><a href="refuseInvit.php?idUtilisateur=' . $invit['idUtilisateur'] . '"><img width="10" height="10" src="img/icon/cancel.svg"></img></a></td>
+                                <td style="padding: 0;border: 1px solid white;"><img onclick="acceptInvit('.$invit['idUtilisateur'].')" width="10" height="10" src="img/icon/checked.svg"></td>
+                                <td style="padding: 0;border: 1px solid white;"><img onclick="refuseInvit('.$invit['idUtilisateur'].')" width="10" height="10" src="img/icon/cancel.svg"></td>
                         </tr>';
         }
         $return .=' </tbody>
@@ -128,6 +128,59 @@ function profil() {
         $return .='</div>';
     }
     return $return;
+}
+
+function newTchatRoom(){
+    $return = "";
+    $return.= '<div class="container">
+            <h1 style="text-align: center;padding-bottom: 20px;">Création d\'une nouvelle salle de tchat</h1>
+            <form action="newRoomTchat.traitement.php" method="post" id="formNewTchatRoom" enctype="multipart/form-data">
+                <div class="form-group row">
+                    <label for="inputNameOfTchatRoom" class="col-sm-2 col-form-label">Nom de la salle :</label>
+                    <div class="col-sm-10">
+                        <input name="nom" type="text" class="form-control" id="inputNameOfTchatRoom" placeholder="Nom" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="inputDescriptionOfTchatRoom" class="col-sm-2 col-form-label">Description de la salle :</label>
+                    <div class="col-sm-10">
+                        <textarea name="descritpion" style="resize:none;" class="form-control" id="inputDescriptionOfTchatRoom" placeholder="Description" form="formNewTchatRoom" required></textarea>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="inputDateOfTchatRoom" class="col-sm-2 col-form-label">Date de la fin de la salle :</label>
+                    <div class="col-sm-10">
+                        <input name="date" type="date" class="form-control" id="inputDateOfTchatRoom" required>';
+
+                        if (isset($_GET['erreur'])) {
+                            if ($_GET['erreur'] == "date") {
+                            $return.= '<p id="erreurRegister">Veuillez entrer une date supérieur à la date d\'aujourd\'hui et pas trop loin</p>';
+                            }
+                        }
+                    $return.= '</div>
+                </div>
+                <div class="form-group row">
+                    <label for="inputVignetteOfTchatRoom" class="col-sm-2 col-form-label">Choix d\'une vignette pour la salle :</label>
+                    <div class="col-sm-10">
+                        <input name="vignette" type="file" class="form-control" id="inputVignetteOfTchatRoom" accept="image/*" required>';
+                        
+                        if (isset($_GET['erreur'])) {
+                            if ($_GET['erreur'] == "vignette") {
+                                $return.= '<p id="erreurRegister">Veuillez entrer une image compatible</p>';
+                            }    
+                        }
+ 
+                    $return.= '</div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-8" style="width: 100%;">
+                        <input name="submit" style="width: 50%; margin: auto;" type="submit" class="form-control" id="submit">
+                    </div>
+                </div>
+            </form>
+        </div>';
+                    
+                    return $return;
 }
 
 function tchatRoom() {

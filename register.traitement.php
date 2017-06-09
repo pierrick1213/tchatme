@@ -26,6 +26,10 @@ if ($pseudo != NULL && $mdp1 != NULL && $mdp2 != NULL && $prenom != NULL && $nom
             exit;
         }
     }
+    if ($typeAvatar[0]!= "image") {
+        header("location: register.php?erreur=failAvatar");
+        exit();
+    }
     $movepath = 'img/avatar/' . $avatar;
     if (move_uploaded_file($_FILES['avatar']['tmp_name'], $movepath)) {
         CreateUser($prenom, $nom, $pseudo, $email, $mdpsha, $avatar);

@@ -77,6 +77,36 @@ function readTchat_roomByUserId($idUtilisateur){
     $sql->execute();
     return $sql;
 }
+function CreateTchatRoomWithoutVignette($nom, $descritpion, $date){
+    $req = "INSERT INTO `tchat_rooms`(`nomTchat_room`, `dureeVieTchat_room`, `descritpionTchat_room`) VALUES (:nom,:date,:descritpion)";
+    $sql = MyPdo()->prepare($req);
+    $sql->bindParam(':nom', $nom);
+    $sql->bindParam(':descritpion', $descritpion);
+    $sql->bindParam(':date', $date);
+    $sql->execute();
+}
+function UpdateTchatRoomVignette($vignette, $idTchatRoom){
+    $req = 'UPDATE `tchat_rooms` SET `vignetteTchat_room`=:vignette WHERE `idTchat_room` = :idTchatRoom';
+    $sql = MyPdo()->prepare($req);
+    $sql->bindParam(':vignette', $vignette);
+    $sql->bindParam(':idTchatRoom', $idTchatRoom);
+    $sql->execute();
+    
+}
+function DeleteTchatRoomById($idTchat_room){
+    $req = "DELETE FROM `tchatme`.`tchat_rooms` WHERE `tchat_rooms`.`idTchat_room` = :idTchat_room";
+    $sql = MyPdo()->prepare($req);
+    $sql->bindParam('idTchat_room', $idTchat_room);
+    $sql->execute();
+    
+}
+function addUserInTchatRoom($idTchat_room, $idOfMe){
+    $req = "INSERT INTO `sontpresents`(`idUtilisateur`, `idTchat_room`) VALUES (:idOfMe,:idTchat_room)";
+    $sql = MyPdo()->prepare($req);
+    $sql->bindParam('idTchat_room', $idTchat_room);
+    $sql->bindParam('idOfMe', $idOfMe);
+    $sql->execute();
+}
 function CreateInvitFriend($idOfMe, $idUser, $reason){
     $req = "INSERT INTO `sontamis`(`idUtilisateur_estAmi`, `idUtilisateur_de`, `raison`) VALUES (:idOfMe,:idUser,:reason)";
     $sql = MyPdo()->prepare($req);

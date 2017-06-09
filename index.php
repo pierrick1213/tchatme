@@ -21,13 +21,14 @@ verifConnecte();
 
         <script src="js/jquery-3.2.0.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
+		<script src="function.js"></script>
     </head>
     <body>
             <?php
            echo navBar();
            ?>
         <div class="container">
-            <h2 style="display: inline">Vos salles de tchat :</h2> <a href="newRoomTchat.php" style="float: right" type="button" class="btn btn-primary btn-lg">+</a>
+            <h1 style="display: inline">Vos salles de tchat :</h1> <a href="newRoomTchat.php" style="float: right" type="button" class="btn btn-primary btn-lg">+</a>
             <table class="table table-bordered">
                 <tr>
                     <th>logo</th>
