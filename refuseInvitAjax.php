@@ -1,5 +1,4 @@
 <?php
-session_start();
 require_once 'function.php';
 verifConnecte();
 require_once 'dao.php';

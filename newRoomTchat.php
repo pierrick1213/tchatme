@@ -23,7 +23,7 @@ require_once 'function.php';
     </head>
     <body>
         <?php
-        echo navBar();
+        echo navBar(0);
         echo newTchatRoom();
         echo footer();
         ?>

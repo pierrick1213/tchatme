@@ -1,6 +1,7 @@
 <?php
 require_once 'function.php';
 verifConnecte();
+verifTchatRoom();
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -25,7 +26,7 @@ verifConnecte();
     </head>
     <body>
         <?php
-        echo navBar();
+        echo navBar(0);
         echo tchatRoom();
         echo footer();
         ?>

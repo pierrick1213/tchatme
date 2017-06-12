@@ -26,7 +26,7 @@ verifIdUser();
     </head>
     <body>
         <?php
-        echo navBar();
+        echo navBar(0);
         echo profil();
         echo footer();
         ?>

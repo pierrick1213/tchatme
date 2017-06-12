@@ -3,7 +3,7 @@
 session_start();
 require_once 'dao.php';
 
-function navBar() {
+function navBar($active) {
     $return = "";
     foreach (readUserById($_SESSION['idUtilisateurConnecte']) as $user) {
 
@@ -18,11 +18,31 @@ function navBar() {
                     <a class="navbar-brand">Tchat’me</a>
                 </div>
                 <div class="collapse navbar-collapse">
-                    <ul class="nav navbar-nav">
-                        <li class="active"><a href="index.php">Mes salles de tchat</a></li>
-                        <li><a href="#">Autres salles disponibles</a></li>
-                        <li><a href="users.php">Les membres</a></li>              
-                    </ul>
+                    <ul class="nav navbar-nav">';
+        switch ($active) {
+            case 0:
+                $return.= '<li><a href="index.php">Mes salles de tchat</a></li>'
+                        . '<li><a href="otherRoomTchat.php">Autres salles disponibles</a></li>'
+                        . '<li><a href="users.php">Les membres</a></li>';
+                break;
+            case 1:
+                $return.= '<li class="active"><a href="index.php">Mes salles de tchat</a></li>'
+                        . '<li><a href="otherRoomTchat.php">Autres salles disponibles</a></li>'
+                        . '<li><a href="users.php">Les membres</a></li>';
+                break;
+            case 2:
+                $return.= '<li><a href="index.php">Mes salles de tchat</a></li>'
+                        . '<li class="active"><a href="otherRoomTchat.php">Autres salles disponibles</a></li>'
+                        . '<li><a href="users.php">Les membres</a></li>';
+                break;
+
+            case 3:
+                $return.= '<li><a href="index.php">Mes salles de tchat</a></li>'
+                        . '<li><a href="otherRoomTchat.php">Autres salles disponibles</a></li>'
+                        . '<li class="active"><a href="users.php">Les membres</a></li>';
+                break;
+        }
+        $return.= '</ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -68,8 +88,8 @@ function navBar() {
             $return .='<tr>
                                 <td style="padding: 0;border: 1px solid white;"><img width="50" height="50" src="img/avatar/' . $invit["avatarUtilisateur"] . '"></td>
                                 <td title="' . $invit['raison'] . '" style="padding: 0;border: 1px solid white;"><a href="profil.php?idUtilisateur=' . $invit['idUtilisateur'] . '">' . $invit['pseudoUtilisateur'] . '</a></td>
-                                <td style="padding: 0;border: 1px solid white;"><img onclick="acceptInvit('.$invit['idUtilisateur'].')" width="10" height="10" src="img/icon/checked.svg"></td>
-                                <td style="padding: 0;border: 1px solid white;"><img onclick="refuseInvit('.$invit['idUtilisateur'].')" width="10" height="10" src="img/icon/cancel.svg"></td>
+                                <td style="padding: 0;border: 1px solid white;"><img onclick="acceptInvit(' . $invit['idUtilisateur'] . ')" width="10" height="10" src="img/icon/checked.svg"></td>
+                                <td style="padding: 0;border: 1px solid white;"><img onclick="refuseInvit(' . $invit['idUtilisateur'] . ')" width="10" height="10" src="img/icon/cancel.svg"></td>
                         </tr>';
         }
         $return .=' </tbody>
@@ -96,6 +116,23 @@ function verifIdUser() {
         if ($_GET['idUtilisateur'] == $_SESSION['idUtilisateurConnecte']) {
             header("location: profil.php");
         }
+    }
+}
+
+function verifTchatRoom() {
+    if (!isset($_GET['idTchat_room'])) {
+        header("location: index.php");
+        exit();
+    }
+    $present = 0;
+    foreach (readSontPresentsByUser($_SESSION['idUtilisateurConnecte']) as $row) {
+        if ($_GET['idTchat_room'] == $row['idTchat_room']) {
+            $present = 1;
+        }
+    }
+    if ($present == 0) {
+        header("location: index.php");
+        exit();
     }
 }
 
@@ -130,7 +167,7 @@ function profil() {
     return $return;
 }
 
-function newTchatRoom(){
+function newTchatRoom() {
     $return = "";
     $return.= '<div class="container">
             <h1 style="text-align: center;padding-bottom: 20px;">Création d\'une nouvelle salle de tchat</h1>
@@ -152,41 +189,45 @@ function newTchatRoom(){
                     <div class="col-sm-10">
                         <input name="date" type="date" class="form-control" id="inputDateOfTchatRoom" required>';
 
-                        if (isset($_GET['erreur'])) {
-                            if ($_GET['erreur'] == "date") {
-                            $return.= '<p id="erreurRegister">Veuillez entrer une date supérieur à la date d\'aujourd\'hui et pas trop loin</p>';
-                            }
-                        }
-                    $return.= '</div>
+    if (isset($_GET['erreur'])) {
+        if ($_GET['erreur'] == "date") {
+            $return.= '<p id="erreurRegister">Veuillez entrer une date supérieur à la date d\'aujourd\'hui et pas trop loin</p>';
+        }
+    }
+    $return.= '</div>
                 </div>
                 <div class="form-group row">
                     <label for="inputVignetteOfTchatRoom" class="col-sm-2 col-form-label">Choix d\'une vignette pour la salle :</label>
                     <div class="col-sm-10">
                         <input name="vignette" type="file" class="form-control" id="inputVignetteOfTchatRoom" accept="image/*" required>';
-                        
-                        if (isset($_GET['erreur'])) {
-                            if ($_GET['erreur'] == "vignette") {
-                                $return.= '<p id="erreurRegister">Veuillez entrer une image compatible</p>';
-                            }    
-                        }
- 
-                    $return.= '</div>
+
+    if (isset($_GET['erreur'])) {
+        if ($_GET['erreur'] == "vignette") {
+            $return.= '<p id="erreurRegister">Veuillez entrer une image compatible</p>';
+        }
+    }
+
+    $return.= '</div>
                 </div>
                 <div class="form-group row">
-                    <div class="col-sm-8" style="width: 100%;">
+                    <div class="col-sm-12 text-center" >
                         <input name="submit" style="width: 50%; margin: auto;" type="submit" class="form-control" id="submit">
                     </div>
                 </div>
             </form>
         </div>';
-                    
-                    return $return;
+
+    return $return;
 }
 
+/**
+ * 
+ * @return string
+ */
 function tchatRoom() {
     return '<div class="container bootstrap snippet">
             <div class="row">
-                <div class="col-md-4 col-md-offset-4">
+                <div class="col-md-6" style="display: inline-block!important;">
                     <div class="portlet portlet-default">
                         <div class="portlet-heading">
                             <div class="portlet-title">
@@ -255,7 +296,7 @@ function tchatRoom() {
                             <div class="portlet-footer">
                                 <form role="form">
                                     <div class="form-group">
-                                        <textarea class="form-control" placeholder="Enter message..."></textarea>
+                                        <textarea style="resize:none;" class="form-control" placeholder="Enter message..."></textarea>
                                     </div>
                                     <div class="form-group">
                                         <button type="button" class="btn btn-default pull-right">Send</button>
@@ -266,10 +307,21 @@ function tchatRoom() {
                         </div>
                     </div>
                 </div>
+                <div style="display: inline-block;">
+                    <h2>Date de fin</h2>
+                <p>5 Juin 2017</p>
+                <h2>Descritpion</h2>
+                <p style="width: 200px;">Bonjour, ceci est une descritpion lolilolilolilo jdhfh jfhfzdiu hfgh udgh ghfhzd ghdg gfgdg gfhdh gfsdhdg</p><br>
+                <a href="leaveRoomTchat.php?idTchat_room=' . $_GET['idTchat_room'] . '" class="btn btn-danger">Quitter la salle de tchat</a>
+                </div>
             </div>
         </div>';
 }
 
+/**
+ * 
+ * @return string
+ */
 function participeTchat() {
     $return = "";
     foreach (readTchat_roomByUserId($_SESSION['idUtilisateurConnecte']) as $tchatRoom) {
@@ -278,6 +330,20 @@ function participeTchat() {
                          <td><a href="roomTchat.php?idTchat_room=' . $tchatRoom['idTchat_room'] . '">' . $tchatRoom['nomTchat_room'] . '</a></td>
                          <td>' . $tchatRoom['descritpionTchat_room'] . '</td>
                          <td>' . $tchatRoom['dureeVieTchat_room'] . '</td>
+                        </tr>';
+    }
+    return $return;
+}
+
+function noParticipeTchat() {
+    $return = "";
+    foreach (readNoTchat_roomByUserId($_SESSION['idUtilisateurConnecte']) as $tchatRoom) {
+        $return .= '<tr>
+                         <td><img width="50" height="50" src="img/vignette/' . $tchatRoom['vignetteTchat_room'] . '"></td>
+                         <td>' . $tchatRoom['nomTchat_room'] . '</td>
+                         <td>' . $tchatRoom['descritpionTchat_room'] . '</td>
+                         <td>' . $tchatRoom['dureeVieTchat_room'] . '</td>
+                             <td><a href="joinRoomTchat.php?idTchat_room=' . $tchatRoom['idTchat_room'] . '">Rejoindre</a></td>
                         </tr>';
     }
     return $return;

@@ -70,8 +70,21 @@ function CreateUser($prenom, $nom, $pseudo, $email, $mdp, $avatar) {
     $sql->bindParam(':avatar', $avatar);
     $sql->execute();
 }
+/**
+ * 
+ * @param type $idUtilisateur 
+ * @return type
+ */
 function readTchat_roomByUserId($idUtilisateur){
     $req = "SELECT tchat_rooms.`idTchat_room`, `nomTchat_room`, `dureeVieTchat_room`, `descritpionTchat_room`, `vignetteTchat_room` FROM `tchat_rooms`,`sontpresents` WHERE tchat_rooms.`idTchat_room` = sontpresents.`idTchat_room` AND idUtilisateur = :idUtilisateur";
+    $sql = MyPdo()->prepare($req);
+    $sql->bindParam(':idUtilisateur', $idUtilisateur);
+    $sql->execute();
+    return $sql;
+}
+
+function readNoTchat_roomByUserId($idUtilisateur){
+    $req = "SELECT tchat_rooms.`idTchat_room`, `nomTchat_room`, `dureeVieTchat_room`, `descritpionTchat_room`, `vignetteTchat_room` FROM `tchat_rooms`,`sontpresents` WHERE tchat_rooms.`idTchat_room` = sontpresents.`idTchat_room` AND idUtilisateur != :idUtilisateur";
     $sql = MyPdo()->prepare($req);
     $sql->bindParam(':idUtilisateur', $idUtilisateur);
     $sql->execute();
@@ -96,15 +109,22 @@ function UpdateTchatRoomVignette($vignette, $idTchatRoom){
 function DeleteTchatRoomById($idTchat_room){
     $req = "DELETE FROM `tchatme`.`tchat_rooms` WHERE `tchat_rooms`.`idTchat_room` = :idTchat_room";
     $sql = MyPdo()->prepare($req);
-    $sql->bindParam('idTchat_room', $idTchat_room);
+    $sql->bindParam(':idTchat_room', $idTchat_room);
     $sql->execute();
     
 }
 function addUserInTchatRoom($idTchat_room, $idOfMe){
     $req = "INSERT INTO `sontpresents`(`idUtilisateur`, `idTchat_room`) VALUES (:idOfMe,:idTchat_room)";
     $sql = MyPdo()->prepare($req);
-    $sql->bindParam('idTchat_room', $idTchat_room);
-    $sql->bindParam('idOfMe', $idOfMe);
+    $sql->bindParam(':idTchat_room', $idTchat_room);
+    $sql->bindParam(':idOfMe', $idOfMe);
+    $sql->execute();
+}
+function deleteUserInTchatRoom($idTchat_room, $idOfMe){
+    $req = "DELETE FROM `sontpresents` WHERE `idTchat_room` = :idTchat_room AND `idUtilisateur` = :idOfMe";
+    $sql = MyPdo()->prepare($req);
+    $sql->bindParam(':idTchat_room', $idTchat_room);
+    $sql->bindParam(':idOfMe', $idOfMe);
     $sql->execute();
 }
 function CreateInvitFriend($idOfMe, $idUser, $reason){
@@ -129,7 +149,7 @@ function AcceptInvit($idOfMe, $idUser){
     $sql->bindParam(':idOfMe', $idOfMe);
     $sql->bindParam(':idUser', $idUser);
     $sql->execute();
-    return $sql;
+
 }
 function RefuseInvit($idOfMe, $idUser){
     $req = "DELETE FROM `sontamis` WHERE `idUtilisateur_de` = :idOfMe  and `idUtilisateur_estAmi` = :idUser";
@@ -137,7 +157,6 @@ function RefuseInvit($idOfMe, $idUser){
     $sql->bindParam(':idOfMe', $idOfMe);
     $sql->bindParam(':idUser', $idUser);
     $sql->execute();
-    return $sql;
 }
 function DeleteFriend($idOfMe, $idUser){
     $req = "DELETE FROM `sontamis` WHERE `idUtilisateur_estAmi` = :idOfMe1 AND `idUtilisateur_de` = :idUser1 OR `idUtilisateur_estAmi` = :idUser2 AND `idUtilisateur_de` = :idOfMe2";
@@ -146,6 +165,12 @@ function DeleteFriend($idOfMe, $idUser){
     $sql->bindParam(':idOfMe2', $idOfMe);
     $sql->bindParam(':idUser1', $idUser);
     $sql->bindParam(':idUser2', $idUser);
+    $sql->execute();
+}
+function readSontPresentsByUser($idOfMe){
+    $req = "SELECT * FROM `sontpresents` WHERE `idUtilisateur` = :idOfMe";
+    $sql = MyPdo()->prepare($req);
+    $sql->bindParam(':idOfMe', $idOfMe);
     $sql->execute();
     return $sql;
 }

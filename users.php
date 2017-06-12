@@ -24,7 +24,7 @@ verifConnecte();
     </head>
     <body>
         <?php
-        echo navBar();
+        echo navBar(3);
         echo membresAffichage();
         echo footer();
         ?>
