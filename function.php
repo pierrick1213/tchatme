@@ -225,81 +225,29 @@ function newTchatRoom() {
  * @return string
  */
 function tchatRoom() {
-    return '<div class="container bootstrap snippet">
+    $return = "";
+    foreach (readTchat_roomById($_GET['idTchat_room']) as $tchat_room){
+    $return.= '<div class="container bootstrap snippet">
             <div class="row">
                 <div class="col-md-6" style="display: inline-block!important;">
                     <div class="portlet portlet-default">
                         <div class="portlet-heading">
                             <div class="portlet-title">
-                                <h4><i class="fa fa-circle text-green"></i> Jane Smith</h4>
+                            
+                                <h4><i class="fa fa-circle text-green"></i><img src="img/vignette/'.$tchat_room['vignetteTchat_room'].'" width="50" ></img>'.$tchat_room['nomTchat_room'].'</h4>
                             </div>
-                            <div class="clearfix"></div>
+                            <div id="divtest" class="clearfix"></div>
                         </div>
-                        <div id="chat" class="panel-collapse collapse in">
-                            <div class="portlet-body chat-widget" style="overflow-y: auto; width: auto; height: 300px;">
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <p class="text-center text-muted small">January 1, 2014 at 12:23 PM</p>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <div class="media">
-                                            <a class="pull-left" href="#">
-                                                <img class="media-object img-circle" src="http://lorempixel.com/30/30/people/1/" alt="">
-                                            </a>
-                                            <div class="media-body">
-                                                <h4 class="media-heading">Jane Smith
-                                                    <span class="small pull-right">12:23 PM</span>
-                                                </h4>
-                                                <p>Hi, I wanted to make sure you got the latest product report. Did Roddy get it to you?</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <hr>
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <div class="media">
-                                            <a class="pull-left" href="#">
-                                                <img class="media-object img-circle" src="http://lorempixel.com/30/30/people/7/" alt="">
-                                            </a>
-                                            <div class="media-body">
-                                                <h4 class="media-heading">John Smith
-                                                    <span class="small pull-right">12:28 PM</span>
-                                                </h4>
-                                                <p>Yeah I did. Everything looks good.</p>
-                                                <p>Did you have an update on purchase order #302?</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <hr>
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <div class="media">
-                                            <a class="pull-left" href="#">
-                                                <img class="media-object img-circle" src="http://lorempixel.com/30/30/people/7/" alt="">
-                                            </a>
-                                            <div class="media-body">
-                                                <h4 class="media-heading">Jane Smith
-                                                    <span class="small pull-right">12:39 PM</span>
-                                                </h4>
-                                                <p>No not yet, the transaction hasnt cleared yet. I will let you know as soon as everything goes through. Any idea where you want to get lunch today?</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <hr>
+                        <div  id="chat" class="panel-collapse collapse in">
+    <div id="divMessage" class="portlet-body chat-widget" style="overflow-y: auto; width: auto; height: 300px;">
                             </div>
-
-                            <div class="portlet-footer">
+                           <div class="portlet-footer">
                                 <form role="form">
                                     <div class="form-group">
-                                        <textarea style="resize:none;" class="form-control" placeholder="Enter message..."></textarea>
+                                        <textarea style="resize:none;" id="Message" class="form-control" placeholder="Enter message..."></textarea>
                                     </div>
                                     <div class="form-group">
-                                        <button type="button" class="btn btn-default pull-right">Send</button>
+                                        <button onclick="sendMessage(' . $tchat_room['idTchat_room'] .')" type="button" class="btn btn-default pull-right">Send</button>
                                         <div class="clearfix"></div>
                                     </div>
                                 </form>
@@ -308,14 +256,16 @@ function tchatRoom() {
                     </div>
                 </div>
                 <div style="display: inline-block;">
-                    <h2>Date de fin</h2>
-                <p>5 Juin 2017</p>
+                    <h2>Echéance de la salle</h2>
+                <p>'.$tchat_room['dureeVieTchat_room'].'</p>
                 <h2>Descritpion</h2>
-                <p style="width: 200px;">Bonjour, ceci est une descritpion lolilolilolilo jdhfh jfhfzdiu hfgh udgh ghfhzd ghdg gfgdg gfhdh gfsdhdg</p><br>
-                <a href="leaveRoomTchat.php?idTchat_room=' . $_GET['idTchat_room'] . '" class="btn btn-danger">Quitter la salle de tchat</a>
+                <p style="width: 200px;">'.$tchat_room['descritpionTchat_room'].'</p><br>
+                <a href="leaveRoomTchat.php?idTchat_room=' . $tchat_room['idTchat_room'] . '" class="btn btn-danger">Quitter la salle de tchat</a>
                 </div>
             </div>
         </div>';
+    }
+    return $return;
 }
 
 /**

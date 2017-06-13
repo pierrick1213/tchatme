@@ -2,6 +2,7 @@
 require_once 'function.php';
 verifConnecte();
 verifTchatRoom();
+$idTchatRoom = $_GET['idTchat_room'];
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -22,7 +23,7 @@ verifTchatRoom();
 
         <script src="js/jquery-3.2.0.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
-		<script src="function.js"></script>
+	<script src="function.js"></script>
     </head>
     <body>
         <?php
@@ -30,6 +31,13 @@ verifTchatRoom();
         echo tchatRoom();
         echo footer();
         ?>
+    <script type="text/javascript">
+            $(document).ready(function () {
+                readMessage(<?php echo $idTchatRoom;?>);
+            });
+            setInterval(function(){ readMessage(<?php echo $idTchatRoom;?>); }, 3000);
+            
+        </script>
     </body>
 </html>
 

@@ -101,4 +101,39 @@ function refuseInvit(idUtilisateur){
     });
 }
 
+function readMessage(idTchatRoom){
+    $.ajax({
+        type: 'POST',
+        url: 'readMessageAjax.php',
+        data: {'idTchatRoom': idTchatRoom},
+        dataType: 'html',
+        success: function (data) {
+            $('#divMessage').html(data);
+        },
+        error: function (jqXHR) {
+            $('#divMessage').html(jqXHR.toString());
+        }
+    });
+    
+}
+
+function sendMessage(idTchatRoom){
+     var message = $("#Message").val();
+     if (message !== "") {
+     $.ajax({
+        type: 'POST',
+        url: 'sendMessageAjax.php',
+        data: {'idTchatRoom': idTchatRoom, 'message': message},
+        success: function () {
+            readMessage(idTchatRoom);
+            
+        },
+        error: function (jqXHR) {
+
+        }
+    });
+    }
+     
+}
+
 
