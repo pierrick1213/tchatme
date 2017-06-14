@@ -25,14 +25,24 @@ verifConnecte();
     <body>
         <?php
         echo navBar(3);
-        echo membresAffichage();
-        echo footer();
-        ?>
-        <script type="text/javascript">
+        if (!verifAdmin()) {
+            echo membresAffichageUser();
+            echo '<script type="text/javascript">
             $(document).ready(function () {
                 searchNoFriend();
                 searchFriend();
             });
-        </script>
+        </script>';
+        } else {
+            echo membresAffichageAdmin();
+            echo '<script type="text/javascript">
+            $(document).ready(function () {
+                searchUser();
+            });
+        </script>';
+        }
+
+        echo footer();
+        ?>
     </body>
 </html>

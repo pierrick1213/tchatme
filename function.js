@@ -30,6 +30,38 @@ function searchFriend() {
     });
 }
 
+function searchUser(){
+    var nameUser = $('#rechercheUser').val();
+    $.ajax({
+        type: 'POST',
+        url: 'searchUserAjax.php',
+        data: {'nameUser': nameUser},
+        dataType: 'html',
+        success: function (data) {
+            $('#resultUser').html(data);
+        },
+        error: function (jqXHR) {
+            $('#resultUser').html(jqXHR.toString());
+        }
+    });
+}
+
+function searchTchatRoom(){
+    var nameTchatRoom = $('#rechercheTchatRoom').val();
+    $.ajax({
+        type: 'POST',
+        url: 'searchRoomTchatAjax.php',
+        data: {'nameTchatRoom': nameTchatRoom},
+        dataType: 'html',
+        success: function (data) {
+            $('#resultTchat').html(data);
+        },
+        error: function (jqXHR) {
+            $('#resultTchat').html(jqXHR.toString());
+        }
+    });
+}
+
 function sendInvitText(idUtilisateur, profil) {
 
     var texteDemande = prompt("Veuillez indiquer la raison de votre demande d'amitié (laissez vide si aucune raison)");
@@ -58,7 +90,7 @@ function deleteFriend(idUtilisateur, profil) {
         url: 'deleteFriendAjax.php',
         data: {'idUtilisateur': idUtilisateur},
         success: function () {
-            if (profil === true) {
+            if (profil) {
                 document.location.href = "profil.php?idUtilisateur=" + idUtilisateur;
             }
             else {
@@ -66,6 +98,44 @@ function deleteFriend(idUtilisateur, profil) {
                 searchNoFriend();
             }
 
+        },
+        error: function (jqXHR) {
+
+        }
+    });
+}
+function deleteUser(idUtilisateur, profil){
+    $.ajax({
+        type: 'POST',
+        url: 'deleteUserAjax.php',
+        data: {'idUtilisateur': idUtilisateur},
+        success: function () {
+            if (profil) {
+                document.location.href="users.php" 
+            }
+            else{
+                searchUser();
+            }
+        },
+        error: function (jqXHR) {
+
+        }
+    });
+}
+
+function deleteTchatRoom(idTchatRoom, tchatRoom){
+    $.ajax({
+        type: 'POST',
+        url: 'deleteTchatRoomAjax.php',
+        data: {'idTchatRoom': idTchatRoom},
+        success: function () {
+            if (tchatRoom) {
+                document.location.href="roomTchatAdmin.php" 
+            }
+            else{
+                searchTchatRoom();
+            }
+                
         },
         error: function (jqXHR) {
 
@@ -101,7 +171,7 @@ function refuseInvit(idUtilisateur){
     });
 }
 
-function readMessage(idTchatRoom){
+function readMessage(idTchatRoom, down){
     $.ajax({
         type: 'POST',
         url: 'readMessageAjax.php',
@@ -109,12 +179,16 @@ function readMessage(idTchatRoom){
         dataType: 'html',
         success: function (data) {
             $('#divMessage').html(data);
+            if (down === true) {
+            window.location.hash = '';
+            window.location.hash = '#down';
+            }
+            
         },
         error: function (jqXHR) {
             $('#divMessage').html(jqXHR.toString());
         }
     });
-    
 }
 
 function sendMessage(idTchatRoom){
@@ -125,8 +199,8 @@ function sendMessage(idTchatRoom){
         url: 'sendMessageAjax.php',
         data: {'idTchatRoom': idTchatRoom, 'message': message},
         success: function () {
-            readMessage(idTchatRoom);
-            
+            readMessage(idTchatRoom, true);
+            $("#Message").val("");
         },
         error: function (jqXHR) {
 

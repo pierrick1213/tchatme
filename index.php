@@ -1,6 +1,9 @@
 <?php
 require_once 'function.php';
 verifConnecte();
+if (verifAdmin()) {
+    header("location: roomTchatAdmin.php");
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">

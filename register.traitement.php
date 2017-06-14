@@ -33,7 +33,7 @@ if ($pseudo != NULL && $mdp1 != NULL && $mdp2 != NULL && $prenom != NULL && $nom
     $movepath = 'img/avatar/' . $avatar;
     if (move_uploaded_file($_FILES['avatar']['tmp_name'], $movepath)) {
         CreateUser($prenom, $nom, $pseudo, $email, $mdpsha, $avatar);
-        header('location:login.php?reussi=true');
+        header('location:login.php?reussi');
     } else {
         header("location: register.php?erreur=failAvatar");
     }

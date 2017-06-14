@@ -2,7 +2,6 @@
 require_once 'function.php';
 verifConnecte();
 verifTchatRoom();
-$idTchatRoom = $_GET['idTchat_room'];
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -32,10 +31,14 @@ $idTchatRoom = $_GET['idTchat_room'];
         echo footer();
         ?>
     <script type="text/javascript">
+        
             $(document).ready(function () {
-                readMessage(<?php echo $idTchatRoom;?>);
+                var url = window.location.href;
+                var idTchat_room = url.substring(url.lastIndexOf('=') + 1);
+                readMessage(idTchat_room, true);
             });
-            setInterval(function(){ readMessage(<?php echo $idTchatRoom;?>); }, 3000);
+            
+            setInterval(function(){ readMessage(window.location.href.substring(window.location.href.lastIndexOf('=') + 1)); }, 3000);
             
         </script>
     </body>

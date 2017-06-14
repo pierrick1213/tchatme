@@ -28,9 +28,10 @@ session_destroy();
         <h2 class="form-signin-heading">Connexion</h2>
         <?php
         if (isset($_GET["reussi"])) {
-            if ($_GET["reussi"] == true) {
                 echo '<p>Votre compte a bien été créé</p>';
-            }
+        }
+        if (isset($_GET["erreur"])) {
+                echo '<p>Pseudo ou mot de passe incorrect</p>';
         }
         ?>
         <label for="inputPseudo" class="sr-only">Pseudo</label>

@@ -19,6 +19,23 @@ function navBar($active) {
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">';
+        if (verifAdmin()) {
+            switch ($active) {
+            case 0:
+                $return.= '<li><a href="index.php">Mes salles de tchat</a></li>'
+                        . '<li><a href="users.php">Les membres</a></li>';
+                break;
+            case 1:
+                $return.= '<li class="active"><a href="roomTchatAdmin.php">Les salles de tchat</a></li>'
+                        . '<li><a href="users.php">Les membres</a></li>';
+                break;
+            case 3:
+                $return.= '<li><a href="roomTchatAdmin.php">Les salles de tchat</a></li>'
+                        . '<li class="active"><a href="users.php">Les membres</a></li>';
+                break;
+        }
+        }
+        else{
         switch ($active) {
             case 0:
                 $return.= '<li><a href="index.php">Mes salles de tchat</a></li>'
@@ -41,6 +58,7 @@ function navBar($active) {
                         . '<li><a href="otherRoomTchat.php">Autres salles disponibles</a></li>'
                         . '<li class="active"><a href="users.php">Les membres</a></li>';
                 break;
+        }
         }
         $return.= '</ul>
                     <ul class="nav navbar-nav navbar-right">
@@ -107,7 +125,7 @@ function navBar($active) {
 
 function verifConnecte() {
     if (!isset($_SESSION['idUtilisateurConnecte'])) {
-        header("location: login.php");
+        header("location: login.php?erreur");
     }
 }
 
@@ -118,8 +136,19 @@ function verifIdUser() {
         }
     }
 }
+function verifAdmin(){
+    if ($_SESSION['idUtilisateurConnecte'] == 1) {
+        return true;
+    }
+ else {
+        return false;
+    }
+}
 
 function verifTchatRoom() {
+    if (!verifAdmin()) {
+        
+    
     if (!isset($_GET['idTchat_room'])) {
         header("location: index.php");
         exit();
@@ -133,6 +162,7 @@ function verifTchatRoom() {
     if ($present == 0) {
         header("location: index.php");
         exit();
+    }
     }
 }
 
@@ -152,16 +182,26 @@ function profil() {
             <h2><strong>Email : </strong>' . $user['emailUtilisateur'] . '</h2>';
 
         if (isset($_GET['idUtilisateur'])) {
-            if (readIfUserIsFriendOrNot($_SESSION['idUtilisateurConnecte'], $idUtilisateur) === 0) {
+            if (!verifAdmin()) {
+
+            if ($_GET['idUtilisateur'] == 1) {
+                $return .= '';
+            }
+            else if (readIfUserIsFriendOrNot($_SESSION['idUtilisateurConnecte'], $idUtilisateur) === 0) {
                 $return .='<a href="javascript:deleteFriend(' . $_GET['idUtilisateur'] . ', true)" class="btn btn-danger">Supprimer de mes amis</a>';
             } else if (readIfUserIsFriendOrNot($_SESSION['idUtilisateurConnecte'], $idUtilisateur) === 2) {
                 $return .='<a href="javascript:sendInvitText(' . $_GET['idUtilisateur'] . ', true)" class="btn btn-primary">Ajouter en tant qu\'ami</a>';
             } else if (readIfUserIsFriendOrNot($_SESSION['idUtilisateurConnecte'], $idUtilisateur) === 1) {
                 $return .= 'En attente de l\'acceptation de la demande';
+            } 
+            }  else {
+                $return .='<a href="javascript:deleteUser(' . $_GET['idUtilisateur'] . ', true)" class="btn btn-danger">Supprimer des membres</a>';
             }
-        } else {
+        }
+         else {
             $return .= '<a href="" class="btn btn-success">Modifier Profil</a>';
         }
+        
         $return .='</div>';
     }
     return $return;
@@ -187,7 +227,8 @@ function newTchatRoom() {
                 <div class="form-group row">
                     <label for="inputDateOfTchatRoom" class="col-sm-2 col-form-label">Date de la fin de la salle :</label>
                     <div class="col-sm-10">
-                        <input name="date" type="date" class="form-control" id="inputDateOfTchatRoom" required>';
+                        <input style="width:50%;display: inline;" name="date" type="date" class="form-control" id="inputDateOfTchatRoom" required>
+                        <input style="width:49%;display: inline;" name="time" type="time" class="form-control" id="inputDateOfTchatRoom" required>';
 
     if (isset($_GET['erreur'])) {
         if ($_GET['erreur'] == "date") {
@@ -232,8 +273,7 @@ function tchatRoom() {
                 <div class="col-md-6" style="display: inline-block!important;">
                     <div class="portlet portlet-default">
                         <div class="portlet-heading">
-                            <div class="portlet-title">
-                            
+                            <div class="portlet-title">    
                                 <h4><i class="fa fa-circle text-green"></i><img src="img/vignette/'.$tchat_room['vignetteTchat_room'].'" width="50" ></img>'.$tchat_room['nomTchat_room'].'</h4>
                             </div>
                             <div id="divtest" class="clearfix"></div>
@@ -259,13 +299,38 @@ function tchatRoom() {
                     <h2>Echéance de la salle</h2>
                 <p>'.$tchat_room['dureeVieTchat_room'].'</p>
                 <h2>Descritpion</h2>
-                <p style="width: 200px;">'.$tchat_room['descritpionTchat_room'].'</p><br>
-                <a href="leaveRoomTchat.php?idTchat_room=' . $tchat_room['idTchat_room'] . '" class="btn btn-danger">Quitter la salle de tchat</a>
-                </div>
+                <p style="width: 200px;">'.$tchat_room['descritpionTchat_room'].'</p><br>';
+    if (!verifAdmin()) {
+        $return .= '<a href="leaveRoomTchat.php?idTchat_room=' . $tchat_room['idTchat_room'] . '" class="btn btn-danger">Quitter la salle de tchat</a>';
+    }
+ else {
+        $return .= '<a href="javascript:deleteTchatRoom('.$tchat_room['idTchat_room'].', true)" class="btn btn-danger">Supprimer la salle</a>';
+    }           
+                $return.= '</div>
             </div>
         </div>';
     }
     return $return;
+}
+
+function listTchatRoom(){
+    return '<div class="container">
+            <h1 style="display: inline">Les salles de tchat :</h1>
+            <input style="display: inline-block;width: 75%" type="text" class="form-control" id="rechercheTchatRoom" placeholder="Rechercher le nom de la salle">
+            <input style="display: inline-block;width: 25%" type="button" value="Rechercher" class="btn btn-primary pull-right" onclick="searchTchatRoom()">
+            <table class="table table-bordered">
+                <tr>
+                    <th>logo</th>
+                    <th>Nom de la salle</th>
+                    <th>Descritpion</th>
+                    <th>Date d\'échéance</th>
+                    <th>Supprimer</th>
+                </tr>
+                <tbody id="resultTchat" style="text-align: center;">
+
+                    </tbody>
+                </table>
+            </div>';
 }
 
 /**
@@ -277,7 +342,7 @@ function participeTchat() {
     foreach (readTchat_roomByUserId($_SESSION['idUtilisateurConnecte']) as $tchatRoom) {
         $return .= '<tr>
                          <td><img width="50" height="50" src="img/vignette/' . $tchatRoom['vignetteTchat_room'] . '"></td>
-                         <td><a href="roomTchat.php?idTchat_room=' . $tchatRoom['idTchat_room'] . '">' . $tchatRoom['nomTchat_room'] . '</a></td>
+                         <td><a href="roomTchat.php?idTchat_room=' . $tchatRoom['idTchat_room'] . '">' . $tchatRoom['nomTchat_room'] .'</a></td>
                          <td>' . $tchatRoom['descritpionTchat_room'] . '</td>
                          <td>' . $tchatRoom['dureeVieTchat_room'] . '</td>
                         </tr>';
@@ -293,13 +358,13 @@ function noParticipeTchat() {
                          <td>' . $tchatRoom['nomTchat_room'] . '</td>
                          <td>' . $tchatRoom['descritpionTchat_room'] . '</td>
                          <td>' . $tchatRoom['dureeVieTchat_room'] . '</td>
-                             <td><a href="joinRoomTchat.php?idTchat_room=' . $tchatRoom['idTchat_room'] . '">Rejoindre</a></td>
+                             <td><a class="btn btn-primary" href="joinRoomTchat.php?idTchat_room=' . $tchatRoom['idTchat_room'] . '">Rejoindre</a></td>
                         </tr>';
     }
     return $return;
 }
 
-function membresAffichage() {
+function membresAffichageUser() {
     return '<div class="container">
             <div class="tableauxUsers">
                 <h1>Membres non ami(e)s</h1>
@@ -335,6 +400,28 @@ function membresAffichage() {
                     </tbody>
                 </table>
             </div>
+        </div>';
+}
+function membresAffichageAdmin() {
+    return '<div class="container">
+                <h1>Les membres</h1>
+                <input style="display: inline-block;width: 75%" type="text" class="form-control" id="rechercheUser" placeholder="Rechercher le pseudo">
+                <input style="display: inline-block;width: 25%" type="button" value="Rechercher" class="btn btn-primary pull-right" onclick="searchUser()">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Avatar</th>
+                            <th>Pseudo</th>
+                            <th>Prénom</th>
+                            <th>Nom</th>
+                            <th>Email</th>
+                            <th>Supprimer l\'utilisateur</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultUser" style="text-align: center;">
+
+                    </tbody>
+                </table>
         </div>';
 }
 

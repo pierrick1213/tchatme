@@ -3,13 +3,16 @@ session_start();
 require_once 'dao.php';
 $idTchatRoom = filter_input(INPUT_POST, 'idTchatRoom');
 $toDisplay = '';
+$oldDate = NULL;
 foreach (readMessageByIdTchatRoom($idTchatRoom) as $message){
     $dateMessage = explode(" ", $message['dateMessage']);
-                                $toDisplay.='<div class="row">
-                                    <div class="col-lg-12">
+                                $toDisplay.='<div class="row">';
+                                if ($oldDate != $dateMessage[0]) {
+                                    $toDisplay.='<div class="col-lg-12">
                                         <p class="text-center text-muted small">'.$dateMessage[0].'</p>
-                                    </div>
-                                </div>
+                                    </div>';
+                                }                
+                                $toDisplay.='</div>
                                 <div class="row">
                                     <div class="col-lg-12">
                                         <div class="media">
@@ -26,5 +29,7 @@ foreach (readMessageByIdTchatRoom($idTchatRoom) as $message){
                                     </div>
                                 </div>
                                 <hr>';
+                                $oldDate = $dateMessage[0];
                              }
+                             $toDisplay.='<div id="down"></div>';
                              echo $toDisplay;

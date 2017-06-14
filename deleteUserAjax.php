@@ -1,0 +1,6 @@
+<?php
+session_start();
+require_once 'dao.php';
+$idUtilisateur = filter_input(INPUT_POST, 'idUtilisateur');
+DeleteUser( $idUtilisateur);
+

@@ -2,7 +2,6 @@
 require_once 'function.php';
 verifConnecte();
 verifIdUser();
-//verification si amis ou pas
 ?>
 <!DOCTYPE html>
 <html lang="fr">
